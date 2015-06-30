@@ -49,6 +49,14 @@ vs.:
         (t (error "Non-numbers (or negatives) don't work real well with factorials!"))))
 ```
 
+### Reverse a list
+glyphs:
+```lisp
+(ƒ reverse*
+  (cdr α) → (append (reverse* (cdr α)) `(,(car α)))
+  α → α)
+```
+
 ### Map with glyphs lambda macro to compare strings and do a side effect
 glyphs:
 
