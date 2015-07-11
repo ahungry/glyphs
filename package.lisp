@@ -18,6 +18,6 @@
 
 (defpackage #:glyphs
   (:use #:cl #:cl-ppcre #:parenscript #:named-readtables)
-  (:export #:ƒ #:ƒƒ #:λ #:λλ #:α #:*ψ* #:ψ #:±
+  (:export #:ƒ #:ƒ→ #:ƒƒ #:λ #:λλ #:α #:*ψ* #:ψ #:±
            #:syntax
            #:in-readtable))

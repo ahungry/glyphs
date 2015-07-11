@@ -45,6 +45,50 @@
         ((atom structure) (list structure))
         (t (mapcan #'flatten structure))))
 
+(defmacro arg-walker (&rest args)
+  `(setf ,@(loop for arg in args
+              for i from 0
+              collect arg
+              collect `(nth ,i list-match))))
+
+(defmacro pm (name args &rest rest)
+  `(defun ,name ,args
+     (let ((list-match ,(car args)))
+       ,@rest)))
+
+(defmacro defn (name types args &rest rest)
+  "Type safe defun"
+  (let ((types (remove-if
+                (lambda (x) (or (equal '-> x) (equal '→ x))) types)))
+    `(progn (defun ,name ,args
+              ,@(loop for arg in (cdr args) for type in types
+                     collect `(check-type ,arg ,type))
+              ,@rest)
+            (declaim (ftype (function ,(butlast types) ,@(last types)) ,name)))))
+
+(defmacro ƒ→ (name types &rest rest)
+  "Similar to defun, requires using α as the default case.
+Includes the type safety of defn."
+  `(defn ,name ,types (&optional glyphs:α
+                   ,@(remove-duplicates
+                      (loop for arg in (flatten rest)
+                         when (and (symbolp arg)
+                                   (or (string= arg '? :end1 1)
+                                       (string= arg 'α :end1 1))
+                                   (> (length (string arg)) 1))
+                         collect arg)))
+     (let ((glyphs:α (or glyphs:α t)))
+       (cond
+	 ,@(loop for arg in rest
+	      for iter from 0
+	      when (and (symbolp arg)
+                        (or (string= '→ arg)
+                            (string= '-> arg)))
+	      collect `(,(if (consp (nth (1- iter) rest))
+			     `,(nth (1- iter) rest)
+                             `(equal glyphs:α ,(nth (1- iter) rest)))
+                         ,(nth (1+ iter) rest)))))))
+
 (defmacro ƒ (name &rest rest)
   "Similar to defun, requires using x as the default case"
   `(defun ,name (&optional glyphs:α
