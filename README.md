@@ -49,6 +49,13 @@ vs.:
         (t (error "Non-numbers (or negatives) don't work real well with factorials!"))))
 ```
 
+### Built in type safety with factorial
+```lisp
+(ƒ→ factorial (integer → integer)
+  0 → 1
+  α → (* α (factorial (1- α))))
+```
+
 ### Reverse a list
 glyphs:
 ```lisp
