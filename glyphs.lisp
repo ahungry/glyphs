@@ -35,6 +35,7 @@
     `(progn
        (cl-ppcre:regex-replace-all *ψ* α ,(car replace-list)))))
 
+;; https://stackoverflow.com/questions/19319277/how-to-define-symbols-that-will-work-like-and-by-symbol-macro
 (defreadtable glyphs:syntax
   (:fuze :standard)
   (:macro-char #\~ #'gscan)
@@ -193,3 +194,7 @@ Includes the type safety of defn."
 
 (defmacro ± (a b)
   `(loop for x from ,(- a b) to ,(+ a b) collect x))
+
+(defmacro afn (n &rest r)
+  "Define a function with an anaphoric it. arity/1"
+  `(defun ,n (it) ,@r))
